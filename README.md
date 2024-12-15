@@ -58,7 +58,7 @@ You can view a mermaid diagram of our system [here](docs/README.md).
 
 As stated above, we use [docling](https://github.com/DS4SD/docling) as our default PDF service. When you spin up the stack, docling will be built and run automatically.
 
-If you would like to run the PDF service on a separate machine, you can add the following to your `.env` file:
+If you would like to run the PDF service on a separate machine, you can add the following to your `.env` file. The `make model-dev` target will let you spin up only the docling service:
 ```bash
 echo "MODEL_API_URL=<pdf-model-service-url" >> .env
 ```
@@ -70,15 +70,6 @@ We also support using a fork of NVIDIA's [NV-Ingest](https://github.com/NVIDIA/N
 echo "MODEL_API_URL=<nv-ingest-url>/v1" >> .env
 ```
 **Note the use of `v1` in the URL.**    
-
-Here is the workflow that we use for running this in production (disaggregated core services and pdf model service):
-```bash
-# On an L40s machine
-make model-prod
-
-# On a different machine
-make prod
-```
 
 ## Selecting LLMs 
 
@@ -104,14 +95,6 @@ We use GitHub Actions for CI/CD. We run the following actions:
 - `ruff`: Runs linting and formatting
 - `pr-test`: Runs an e2e podcast test on the PR
 - `build-and-push`: Builds and pushes a new container image to the remote repo. This is used to update production deployments
-
-## Production Deployment
-For production deployment:
-```bash
-make prod
-```
-
-This uses the remote Docker Compose configuration and pulls pre-built images from the registry.
 
 ## Contributing
 
