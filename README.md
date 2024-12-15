@@ -1,4 +1,4 @@
-# AI Research Assistant
+# PDF to Podcast
 
 ## Overview
 A microservice driven implementation for transforming PDFs into engaging audio content. For a deeper dive into the system architecture, please see the diagram below:
