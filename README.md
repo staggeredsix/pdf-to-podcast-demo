@@ -96,6 +96,17 @@ We use GitHub Actions for CI/CD. We run the following actions:
 - `pr-test`: Runs an end-to-end podcast test on the PR
 - `build-and-push`: Builds and pushes a new container image to the remote repo. This is used to update production deployments
 
+## Security Considerations
+
+**Important**: This setup uses HTTP and is not intended for production deployments. For production deployments, consider implementing the following security measures:
+
+- Add SSL/TLS encryption by either:
+  - Configuring uvicorn with SSL certificates
+  - Setting up a reverse proxy (like Nginx) to handle SSL termination
+- Implement proper certificate management
+- Configure appropriate security headers
+- Follow other web security best practices
+
 ## Contributing
 
 1. Fork the repository

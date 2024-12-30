@@ -5,10 +5,28 @@ from typing import Optional, List
 from shared.api_types import StatusResponse
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 PDF_SERVICE_URL = os.getenv("PDF_SERVICE_URL", "http://localhost:8003")
 POLL_INTERVAL = 2  # seconds
 MAX_WAIT_TIME = 3600  # seconds
+ALLOWED_HOSTS = {"localhost", "127.0.0.1"}
+ALLOWED_PORTS = {8003}  # Add any other legitimate ports
+
+
+def validate_service_url(url: str) -> bool:
+    """Validate that the service URL is pointing to an allowed host and port"""
+    try:
+        parsed = urlparse(url)
+        host = parsed.hostname
+        port = parsed.port or (443 if parsed.scheme == "https" else 80)
+        
+        if not host or not port:
+            return False
+            
+        return host in ALLOWED_HOSTS and port in ALLOWED_PORTS
+    except Exception:
+        return False
 
 
 def poll_job_status(job_id: str) -> Optional[dict]:
@@ -190,8 +208,19 @@ def test_health_endpoint():
 
 def main():
     """Main entry point for the test script"""
+    if not validate_service_url(PDF_SERVICE_URL):
+        print(f"Error: Invalid service URL. Must be one of the allowed hosts: {ALLOWED_HOSTS}")
+        sys.exit(1)
+        
     if len(sys.argv) < 2:
         print("Usage: python test_api.py <path_to_pdf_file1> [path_to_pdf_file2 ...]")
+        sys.exit(1)
+
+    # Validate input length before passing to loop
+    MAX_FILES = 1000
+    pdf_paths = sys.argv[1:]
+    if len(pdf_paths) > MAX_FILES:
+        print(f"Error: Too many input files. Maximum allowed is {MAX_FILES}")
         sys.exit(1)
 
     print("Running PDF Service API tests...")
