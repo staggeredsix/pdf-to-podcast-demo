@@ -16,7 +16,7 @@ You can view a mermaid diagram of our system [here](docs/README.md).
    echo "MAX_CONCURRENT_REQUESTS=1" >> .env
    ```
 
-   Note that in production we use the NVIDIA Eleven Labs API key which can handle concurrent requests. For local development, you may want to set `MAX_CONCURRENT_REQUESTS=1` to avoid rate limiting issues. You can generate your own testing API key for free [here](https://elevenlabs.io/).
+   Note that in production we use the NVIDIA Eleven Labs API key, which can handle concurrent requests. For local development, you may want to set `MAX_CONCURRENT_REQUESTS=1` to avoid rate-limiting issues. You can generate your own testing API key for free [here](https://elevenlabs.io/).
 
 2. **Install Dependencies**:
    We use UV to manage python dependencies.
@@ -65,7 +65,7 @@ echo "MODEL_API_URL=<pdf-model-service-url" >> .env
 
 ### Using `nv-ingest`
 
-We also support using a fork of NVIDIA's [NV-Ingest](https://github.com/NVIDIA/NV-Ingest) as our PDF service. This requires 2 A100-SXM machines. See the [repo](https://github.com/jdye64/nv-ingest/tree/brev-dev-convert-endpoint) for more information. If you would like to use this, you can add the following to your `.env` file:
+We also support using a fork of NVIDIA's [NV-Ingest](https://github.com/NVIDIA/NV-Ingest) as our PDF service. This requires two A100-SXM machines. See the [repo](https://github.com/jdye64/nv-ingest/tree/brev-dev-convert-endpoint) for more information. If you would like to use this, you can add the following to your `.env` file:
 ```bash
 echo "MODEL_API_URL=<nv-ingest-url>/v1" >> .env
 ```
@@ -73,7 +73,7 @@ echo "MODEL_API_URL=<nv-ingest-url>/v1" >> .env
 
 ## Selecting LLMs 
 
-We currently use an ensemble of 3 LLMS to generate these podcasts. Out of the box, we recommend using the LLama 3.1-70B NIM. If you would like to use a different model, you can update the `models.json` file with the desired model. The default `models.json` calls a NIM that I have currently hosted. Feel free to use it as you develop locally. When you deploy, please use our NIM API Catalog endpoints.
+We currently use an ensemble of 3 LLMS to generate these podcasts. Out of the box, we recommend using the LLama 3.1-70B NIM. If you would like to use a different model, you can update the `models.json` file with the desired model. The default `models.json` calls a NIM that we have currently hosted. Feel free to use it as you develop locally. When you deploy, please use our NIM API Catalog endpoints.
 
 ## Optimizing for GPU usage
 
@@ -93,7 +93,7 @@ make ruff  # Runs both lint and format
 ## CI/CD
 We use GitHub Actions for CI/CD. We run the following actions:
 - `ruff`: Runs linting and formatting
-- `pr-test`: Runs an e2e podcast test on the PR
+- `pr-test`: Runs an end-to-end podcast test on the PR
 - `build-and-push`: Builds and pushes a new container image to the remote repo. This is used to update production deployments
 
 ## Contributing
