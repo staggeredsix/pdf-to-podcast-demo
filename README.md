@@ -77,11 +77,11 @@ The `make model-dev` target will let you spin up only the docling service.
 
 By default this blueprint uses an ensemble of 3 LLMS to generate podcasts. The example uses the LLama 3.1-70B NIM for balanced performance and accuracy. To use a different model, update the `models.json` file with the desired model. The default `models.json` calls an NVIDIA-hosted NIM. Feel free to use it as you develop locally. When you deploy, please use our NIM API Catalog endpoints.
 
-### Change the Default Models and GPU Assignments
+3. **Change the Default Models and GPU Assignments**
 
 It is easy to swap out different pieces of the stack to optimize GPU usage for available hardware. For example, minimize GPU usage by swapping in the smaller LLama 3.1-8B NIM and disabling GPU usage for `docling` in `docker-compose.yaml`.
 
-### Enable Tracing
+4. **Enable Tracing**
 We expose a Jaeger instance at `http://localhost:16686/` for tracing. This is useful for debugging and monitoring the system.
 
 ## Contributing
