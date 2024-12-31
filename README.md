@@ -1,11 +1,12 @@
 <h2><img align="center" src="https://github.com/user-attachments/assets/cbe0d62f-c856-4e0b-b3ee-6184b7c4d96f">NVIDIA AI Blueprint: PDF to Podcast</h2>
 
 ## Overview
-A microservice driven implementation for transforming PDFs into engaging audio content.
 
-For a deeper dive into the system architecture, please see the diagram below:
+This NVIDIA AI blueprint shows developers how to build a microservice that transforms PDFs into engaging audio content. Built on NVIDIA NIM, this blueprint can run securely on a private network, delivering actionable insight without sharing sensitive data.
 
-View a mermaid diagram of our system [here](docs/README.md).
+<img width="1021" alt="Screenshot 2024-12-30 at 8 43 43 PM" src="https://github.com/user-attachments/assets/604d0b4d-664f-4089-a30d-0431ff35aece" />
+
+[mermaid diagram](docs/README.md).
 
 ## Quick Start Guide
 
