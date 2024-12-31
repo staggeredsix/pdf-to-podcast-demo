@@ -82,6 +82,7 @@ By default this blueprint uses an ensemble of 3 LLMS to generate podcasts. The e
 It is easy to swap out different pieces of the stack to optimize GPU usage for available hardware. For example, minimize GPU usage by swapping in the smaller LLama 3.1-8B NIM and disabling GPU usage for `docling` in `docker-compose.yaml`.
 
 4. **Enable Tracing**
+   
 We expose a Jaeger instance at `http://localhost:16686/` for tracing. This is useful for debugging and monitoring the system.
 
 ## Contributing
