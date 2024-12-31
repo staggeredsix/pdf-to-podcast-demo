@@ -41,6 +41,8 @@ This NVIDIA AI blueprint shows developers how to build a microservice that trans
    ```bash
    make all-services
    ```
+   
+   > **Note:** The first time you run `make all-services`, the `docling` service may take 10-15 minutes to pull and build. Subsequent runs will be much faster.
 
    This command will:
    - Verify environment variables are set
@@ -48,9 +50,7 @@ This NVIDIA AI blueprint shows developers how to build a microservice that trans
    - Start all services using Docker Compose in `--build` mode. 
 
 
-   > **Note:** The first time you run `make all-services`, the `docling` service may take 10-15 minutes to pull and build. Subsequent runs will be much faster.
-
-   You can also set `DETACH=1` to run the services in detached mode, which allows you to continue using your terminal while the services are running.
+  > **Note:** Set `DETACH=1` to run the services in detached mode to continue using your terminal while the services are running.
 
 5. **Generate the Podcast**:
 
