@@ -6,7 +6,7 @@ This NVIDIA AI blueprint shows developers how to build a microservice that trans
 
 <img width="1021" alt="Screenshot 2024-12-30 at 8 43 43 PM" src="https://github.com/user-attachments/assets/604d0b4d-664f-4089-a30d-0431ff35aece" />
 
-[mermaid diagram](docs/README.md).
+[mermaid diagram](docs/README.md)
 
 ## Quick Start Guide
 
@@ -47,6 +47,7 @@ This NVIDIA AI blueprint shows developers how to build a microservice that trans
    - Create necessary directories
    - Start all services using Docker Compose in `--build` mode. 
 
+
    > **Note:** The first time you run `make all-services`, the `docling` service may take 10-15 minutes to pull and build. Subsequent runs will be much faster.
 
    You can also set `DETACH=1` to run the services in detached mode, which allows you to continue using your terminal while the services are running.
@@ -78,7 +79,7 @@ By default this blueprint uses an ensemble of 3 LLMS to generate podcasts. The e
 
 ### Change the Default Models and GPU Assignments
 
-Due to our design, it is easy to swap out different pieces of the stack to optimize GPU usage for available hardware. For example, you could swap each model with the smaller LLama 3.1-8B NIM and disable GPU usage for `docling` in `docker-compose.yaml`.
+It is easy to swap out different pieces of the stack to optimize GPU usage for available hardware. For example, minimize GPU usage by swapping in the smaller LLama 3.1-8B NIM and disabling GPU usage for `docling` in `docker-compose.yaml`.
 
 ### Enable Tracing
 We expose a Jaeger instance at `http://localhost:16686/` for tracing. This is useful for debugging and monitoring the system.
