@@ -9,8 +9,8 @@ View a mermaid diagram of our system [here](docs/README.md).
 
 ## Quick Start Guide
 
-1. **Environment Variables**:
-   Set the following environment variables:
+1. **Set environment variables**
+   
    ```bash
    # Create .env file with required variables
    echo "ELEVENLABS_API_KEY=your_key" > .env
@@ -20,21 +20,22 @@ View a mermaid diagram of our system [here](docs/README.md).
 
    > **Note:** the NVIDIA Eleven Labs API key used in this example can handle concurrent requests. For local development, set `MAX_CONCURRENT_REQUESTS=1` to avoid rate-limiting issues. Generate your own API key for free [here](https://elevenlabs.io/).
 
-2. **Install Dependencies**:
+2. **Install dependencies**
+
    We use [UV](https://pypi.org/project/uv/) to manage Python dependencies.
    
    ```bash
    make uv
    ```
-   This will:
+
+    This will:
    - Install UV if not present
    - Create virtual environment
    - Install project dependencies
 
    If you open up a new terminal window and want to quickly re-use the same environment, you can run `make uv` again.
 
-3. **Start Development Server**:
-   Start the entire stack with:
+4. **Start the development Server**
 
    ```bash
    make all-services
@@ -49,18 +50,18 @@ View a mermaid diagram of our system [here](docs/README.md).
 
    You can also set `DETACH=1` to run the services in detached mode, which allows you to continue using your terminal while the services are running.
 
-5. **Run Podcast Generation**:
+5. **Generate the Podcast**:
 
    ```bash
    source .venv/bin/activate
    python tests/test.py --target <pdf1.pdf> --context <pdf2.pdf>
    ```
 
-   This will generate a 2-person podcast. Add the `--monologue` flag to generate a 1-person podcast. Check out the test file for more examples.
+   By default, this command will generate a 2-person podcast. Add the `--monologue` flag to generate a 1-person podcast.
 
 ## Customization
 
-### Host the PDF service on a separate machine
+1. **Host the PDF service on a separate machine**
 
 This blueprint uses [docling](https://github.com/DS4SD/docling) as the default PDF extraction service.
 
@@ -70,13 +71,13 @@ echo "MODEL_API_URL=<pdf-model-service-url" >> .env
 ```
 The `make model-dev` target will let you spin up only the docling service.  
 
-### Use a Self-hosted NIM 
+2. **Use a Self-hosted NIM** 
 
-We currently use an ensemble of 3 LLMS to generate these podcasts. Out of the box, we recommend using the LLama 3.1-70B NIM. If you would like to use a different model, you can update the `models.json` file with the desired model. The default `models.json` calls an NVIDIA-hosted NIM. Feel free to use it as you develop locally. When you deploy, please use our NIM API Catalog endpoints.
+By default this blueprint uses an ensemble of 3 LLMS to generate podcasts. The example uses the LLama 3.1-70B NIM for balanced performance and accuracy. To use a different model, update the `models.json` file with the desired model. The default `models.json` calls an NVIDIA-hosted NIM. Feel free to use it as you develop locally. When you deploy, please use our NIM API Catalog endpoints.
 
 ### Change the Default Models and GPU Assignments
 
-Due to our design, it is relatively easy to swap out different pieces of our stack to optimize for GPU usage and available hardware. For example, you could swap each model with the smaller LLama 3.1-8B NIM and disable GPU usage for `docling` in `docker-compose.yaml`.
+Due to our design, it is easy to swap out different pieces of the stack to optimize GPU usage for available hardware. For example, you could swap each model with the smaller LLama 3.1-8B NIM and disable GPU usage for `docling` in `docker-compose.yaml`.
 
 ### Enable Tracing
 We expose a Jaeger instance at `http://localhost:16686/` for tracing. This is useful for debugging and monitoring the system.
