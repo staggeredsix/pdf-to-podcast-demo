@@ -1,3 +1,10 @@
+"""
+Podcast flow module for converting PDFs to podcast conversations.
+
+This module handles the workflow for generating multi-speaker podcast content from PDF documents.
+It includes functionality for summarizing PDFs, generating outlines, and creating dialogue segments.
+"""
+
 from shared.pdf_types import PDFMetadata
 from shared.podcast_types import Conversation, PodcastOutline
 from shared.api_types import JobStatus, TranscriptionRequest
@@ -15,7 +22,20 @@ import asyncio
 async def podcast_summarize_pdf(
     pdf_metadata: PDFMetadata, llm_manager: LLMManager, prompt_tracker: PromptTracker
 ) -> AIMessage:
-    """Summarize a single PDF document"""
+    """
+    Summarize a single PDF document using the LLM.
+
+    Args:
+        pdf_metadata (PDFMetadata): The PDF document metadata and content to summarize
+        llm_manager (LLMManager): Manager for LLM interactions
+        prompt_tracker (PromptTracker): Tracks prompts and responses
+
+    Returns:
+        AIMessage: The LLM's summary response
+
+    The function uses a template to generate a summary prompt and tracks both the
+    prompt and response for monitoring purposes.
+    """
     template = PodcastPrompts.get_template("podcast_summary_prompt")
     prompt = template.render(text=pdf_metadata.markdown)
 
@@ -40,7 +60,23 @@ async def podcast_summarize_pdfs(
     job_manager: JobStatusManager,
     logger: logging.Logger,
 ) -> List[PDFMetadata]:
-    """Summarize all PDFs in the request"""
+    """
+    Summarize all PDFs in parallel and update their metadata with summaries.
+
+    Args:
+        pdfs (List[PDFMetadata]): List of PDFs to summarize
+        job_id (str): ID for tracking job progress
+        llm_manager (LLMManager): Manager for LLM interactions
+        prompt_tracker (PromptTracker): Tracks prompts and responses
+        job_manager (JobStatusManager): Manages job status updates
+        logger (logging.Logger): Logger for tracking progress
+
+    Returns:
+        List[PDFMetadata]: The input PDFs with summaries added
+
+    Uses asyncio.gather to process multiple PDFs concurrently and updates
+    job status throughout the process.
+    """
     job_manager.update_status(
         job_id, JobStatus.PROCESSING, f"Summarizing {len(pdfs)} PDFs"
     )
@@ -66,7 +102,24 @@ async def podcast_generate_raw_outline(
     job_manager: JobStatusManager,
     logger: logging.Logger,
 ) -> str:
-    """Generate initial raw outline from summarized PDFs"""
+    """
+    Generate initial raw outline from summarized PDFs.
+
+    Args:
+        summarized_pdfs (List[PDFMetadata]): PDFs with their summaries
+        request (TranscriptionRequest): Original transcription request
+        llm_manager (LLMManager): Manager for LLM interactions
+        prompt_tracker (PromptTracker): Tracks prompts and responses
+        job_id (str): ID for tracking job progress
+        job_manager (JobStatusManager): Manages job status updates
+        logger (logging.Logger): Logger for tracking progress
+
+    Returns:
+        str: Raw outline text generated from the summaries
+
+    Formats document summaries in XML and uses a template to generate
+    an initial podcast outline structure.
+    """
     # Prepare document summaries in XML format
     job_manager.update_status(
         job_id, JobStatus.PROCESSING, "Generating initial outline"
@@ -114,7 +167,24 @@ async def podcast_generate_structured_outline(
     job_manager: JobStatusManager,
     logger: logging.Logger,
 ) -> PodcastOutline:
-    """Convert raw outline to structured format"""
+    """
+    Convert raw outline text to structured PodcastOutline format.
+
+    Args:
+        raw_outline (str): Raw outline text to structure
+        request (TranscriptionRequest): Original transcription request
+        llm_manager (LLMManager): Manager for LLM interactions
+        prompt_tracker (PromptTracker): Tracks prompts and responses
+        job_id (str): ID for tracking job progress
+        job_manager (JobStatusManager): Manages job status updates
+        logger (logging.Logger): Logger for tracking progress
+
+    Returns:
+        PodcastOutline: Structured outline following the PodcastOutline schema
+
+    Uses JSON schema validation to ensure the outline follows the required structure
+    and only references valid PDF filenames.
+    """
     job_manager.update_status(
         job_id,
         JobStatus.PROCESSING,
@@ -157,7 +227,22 @@ async def podcast_process_segment(
     llm_manager: LLMManager,
     prompt_tracker: PromptTracker,
 ) -> tuple[str, str]:
-    """Process a single segment"""
+    """
+    Process a single outline segment to generate initial content.
+
+    Args:
+        segment (Any): Segment from the outline to process
+        idx (int): Index of the segment
+        request (TranscriptionRequest): Original transcription request
+        llm_manager (LLMManager): Manager for LLM interactions
+        prompt_tracker (PromptTracker): Tracks prompts and responses
+
+    Returns:
+        tuple[str, str]: Tuple of (segment_id, generated_content)
+
+    Generates initial content for a segment, incorporating referenced PDF content
+    if available. Uses different templates based on whether references exist.
+    """
     # Get reference content if it exists
     text_content = []
     if segment.references:
@@ -215,7 +300,24 @@ async def podcast_process_segments(
     job_manager: JobStatusManager,
     logger: logging.Logger,
 ) -> Dict[str, str]:
-    """Process each segment in the outline"""
+    """
+    Process all outline segments in parallel to generate initial content.
+
+    Args:
+        outline (PodcastOutline): Structured outline to process
+        request (TranscriptionRequest): Original transcription request
+        llm_manager (LLMManager): Manager for LLM interactions
+        prompt_tracker (PromptTracker): Tracks prompts and responses
+        job_id (str): ID for tracking job progress
+        job_manager (JobStatusManager): Manages job status updates
+        logger (logging.Logger): Logger for tracking progress
+
+    Returns:
+        Dict[str, str]: Dictionary mapping segment IDs to their generated content
+
+    Creates tasks for processing each segment and executes them in parallel using
+    asyncio.gather.
+    """
     # Create tasks for processing each segment
     segment_tasks: List[Coroutine] = []
     for idx, segment in enumerate(outline.segments):
@@ -249,7 +351,23 @@ async def podcast_generate_dialogue_segment(
     llm_manager: LLMManager,
     prompt_tracker: PromptTracker,
 ) -> Dict[str, str]:
-    """Generate dialogue for a single segment"""
+    """
+    Generate dialogue for a single segment.
+
+    Args:
+        segment (Any): Segment from the outline
+        idx (int): Index of the segment
+        segment_text (str): Generated content for the segment
+        request (TranscriptionRequest): Original transcription request
+        llm_manager (LLMManager): Manager for LLM interactions
+        prompt_tracker (PromptTracker): Tracks prompts and responses
+
+    Returns:
+        Dict[str, str]: Dictionary containing section name and generated dialogue
+
+    Formats segment topics and uses a template to convert content into a dialogue
+    format between two speakers.
+    """
     # Format topics for prompt
     topics_text = "\n".join(
         [
@@ -297,7 +415,24 @@ async def podcast_generate_dialogue(
     job_manager: JobStatusManager,
     logger: logging.Logger,
 ) -> List[Dict[str, str]]:
-    """Generate dialogue for each segment"""
+    """
+    Generate dialogue for all segments in parallel.
+
+    Args:
+        segments (Dict[str, str]): Dictionary of segment IDs and their content
+        outline (PodcastOutline): Structured outline
+        request (TranscriptionRequest): Original transcription request
+        llm_manager (LLMManager): Manager for LLM interactions
+        prompt_tracker (PromptTracker): Tracks prompts and responses
+        job_id (str): ID for tracking job progress
+        job_manager (JobStatusManager): Manages job status updates
+        logger (logging.Logger): Logger for tracking progress
+
+    Returns:
+        List[Dict[str, str]]: List of dictionaries containing section names and dialogues
+
+    Creates tasks for generating dialogue for each segment and executes them in parallel.
+    """
     job_manager.update_status(job_id, JobStatus.PROCESSING, "Generating dialogue")
 
     # Create tasks for generating dialogue for each segment
@@ -346,7 +481,23 @@ async def podcast_combine_dialogues(
     job_manager: JobStatusManager,
     logger: logging.Logger,
 ) -> str:
-    """Iteratively combine dialogue segments into a cohesive conversation"""
+    """
+    Iteratively combine dialogue segments into a cohesive conversation.
+
+    Args:
+        segment_dialogues (List[Dict[str, str]]): List of segment dialogues
+        outline (PodcastOutline): Structured outline
+        llm_manager (LLMManager): Manager for LLM interactions
+        prompt_tracker (PromptTracker): Tracks prompts and responses
+        job_id (str): ID for tracking job progress
+        job_manager (JobStatusManager): Manages job status updates
+        logger (logging.Logger): Logger for tracking progress
+
+    Returns:
+        str: Combined dialogue text
+
+    Iteratively combines dialogue segments, ensuring smooth transitions between sections.
+    """
     job_manager.update_status(
         job_id, JobStatus.PROCESSING, "Combining dialogue segments"
     )
@@ -405,7 +556,24 @@ async def podcast_create_final_conversation(
     job_manager: JobStatusManager,
     logger: logging.Logger,
 ) -> Conversation:
-    """Convert the dialogue into structured Conversation format"""
+    """
+    Convert the dialogue into structured Conversation format.
+
+    Args:
+        dialogue (str): Combined dialogue text
+        request (TranscriptionRequest): Original transcription request
+        llm_manager (LLMManager): Manager for LLM interactions
+        prompt_tracker (PromptTracker): Tracks prompts and responses
+        job_id (str): ID for tracking job progress
+        job_manager (JobStatusManager): Manages job status updates
+        logger (logging.Logger): Logger for tracking progress
+
+    Returns:
+        Conversation: Structured conversation following the Conversation schema
+
+    Formats the dialogue into a structured conversation format with proper speaker
+    attribution and timing information.
+    """
     job_manager.update_status(
         job_id, JobStatus.PROCESSING, "Formatting final conversation"
     )
@@ -444,6 +612,18 @@ async def podcast_create_final_conversation(
 
 
 def unescape_unicode_string(s: str) -> str:
-    """Convert escaped Unicode sequences to actual Unicode characters"""
+    """
+    Convert escaped Unicode sequences to actual Unicode characters.
+
+    Args:
+        s (str): String potentially containing escaped Unicode sequences
+
+    Returns:
+        str: String with Unicode sequences converted to actual characters
+
+    Example:
+        >>> unescape_unicode_string("Hello\\u2019s World")
+        "Hello's World"
+    """
     # This handles both raw strings (with extra backslashes) and regular strings
     return s.encode("utf-8").decode("unicode-escape")

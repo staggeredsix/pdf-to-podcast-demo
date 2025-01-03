@@ -1,3 +1,12 @@
+"""
+Test module for the LLMManager class.
+
+This module contains integration tests for the LLMManager class, testing various
+capabilities like basic queries, parallel processing, JSON schema validation,
+and streaming responses. It uses a mock FastAPI application and OpenTelemetry
+instrumentation for testing purposes.
+"""
+
 import asyncio
 import os
 from shared.otel import OpenTelemetryInstrumentation, OpenTelemetryConfig
@@ -8,6 +17,7 @@ from shared.llmmanager import LLMManager
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Set up mock FastAPI app and telemetry for testing
 mock_app = FastAPI()
 mock_telemetry = OpenTelemetryInstrumentation()
 mock_config = OpenTelemetryConfig(
@@ -20,7 +30,25 @@ mock_telemetry.initialize(mock_config, mock_app)
 
 
 async def test_basic_queries():
-    """Test both sync and async basic queries"""
+    """
+    Test both synchronous and asynchronous basic queries.
+    
+    Tests the basic query functionality of LLMManager by making both sync
+    and async requests with simple prompts. Verifies that both methods
+    return expected responses.
+
+    The test:
+    1. Creates an LLMManager instance
+    2. Tests synchronous query with robotics laws prompt
+    3. Tests asynchronous query with machine learning prompt
+    4. Prints responses for manual verification
+
+    Returns:
+        None
+    
+    Raises:
+        Exception: If either query fails or returns unexpected response
+    """
     print("\n=== Testing Basic Queries ===")
 
     manager = LLMManager(api_key=os.getenv("NVIDIA_API_KEY"), telemetry=mock_telemetry)
@@ -55,7 +83,25 @@ async def test_basic_queries():
 
 
 async def test_parallel_processing():
-    """Test processing multiple queries in parallel"""
+    """
+    Test processing multiple queries in parallel.
+    
+    Demonstrates the ability to process multiple queries concurrently using
+    asyncio.gather(). Sends three different programming language queries
+    simultaneously and collects their responses.
+
+    The test:
+    1. Creates an LLMManager instance
+    2. Defines three programming language questions
+    3. Processes queries in parallel using asyncio.gather()
+    4. Prints responses in order with corresponding questions
+
+    Returns:
+        None
+
+    Raises:
+        Exception: If parallel processing fails or returns unexpected responses
+    """
     print("\n=== Testing Parallel Processing ===")
 
     manager = LLMManager(api_key=os.getenv("NVIDIA_API_KEY"), telemetry=mock_telemetry)
@@ -63,6 +109,16 @@ async def test_parallel_processing():
     questions = ["What is Python?", "What is JavaScript?", "What is Rust?"]
 
     async def process_query(question: str, idx: int):
+        """
+        Helper function to process individual queries.
+
+        Args:
+            question (str): The question to ask the LLM
+            idx (int): Index for tracking parallel queries
+
+        Returns:
+            AIMessage: The LLM's response
+        """
         return await manager.query_async(
             model_key="reasoning",
             messages=[
@@ -81,7 +137,25 @@ async def test_parallel_processing():
 
 
 async def test_json_schema():
-    """Test JSON schema structured output"""
+    """
+    Test JSON schema structured output.
+    
+    Verifies that the LLMManager can generate responses conforming to a
+    specified JSON schema. Uses a sample schema for person details including
+    name, age, occupation, and hobbies.
+
+    The test:
+    1. Creates an LLMManager instance
+    2. Defines a JSON schema for person details
+    3. Requests a character generation conforming to schema
+    4. Verifies response matches schema structure
+
+    Returns:
+        None
+
+    Raises:
+        Exception: If response doesn't conform to schema or query fails
+    """
     print("\n=== Testing JSON Schema ===")
 
     manager = LLMManager(api_key=os.getenv("NVIDIA_API_KEY"), telemetry=mock_telemetry)
@@ -111,7 +185,25 @@ async def test_json_schema():
 
 
 async def test_streaming():
-    """Test both sync and async streaming"""
+    """
+    Test both synchronous and asynchronous streaming.
+    
+    Tests the streaming capabilities of LLMManager using both sync and async
+    methods. Verifies that streaming responses are received correctly for
+    simple counting and listing tasks.
+
+    The test:
+    1. Creates an LLMManager instance
+    2. Tests sync streaming with counting prompt
+    3. Tests async streaming with days of week prompt
+    4. Verifies streaming responses are complete and coherent
+
+    Returns:
+        None
+
+    Raises:
+        Exception: If streaming fails or returns incomplete responses
+    """
     print("\n=== Testing Streaming ===")
 
     manager = LLMManager(api_key=os.getenv("NVIDIA_API_KEY"), telemetry=mock_telemetry)
@@ -146,7 +238,26 @@ async def test_streaming():
 
 
 async def test_json_streaming():
-    """Test JSON schema structured output with streaming"""
+    """
+    Test JSON schema structured output with streaming.
+    
+    Tests the combination of JSON schema validation and streaming responses.
+    Uses a simple story summary schema to verify that streamed responses
+    conform to the specified structure.
+
+    The test:
+    1. Creates an LLMManager instance
+    2. Defines a story summary JSON schema
+    3. Tests sync JSON streaming
+    4. Tests async JSON streaming
+    5. Verifies both responses conform to schema
+
+    Returns:
+        None
+
+    Raises:
+        Exception: If streaming fails or responses don't match schema
+    """
     print("\n=== Testing JSON Streaming ===")
 
     manager = LLMManager(api_key=os.getenv("NVIDIA_API_KEY"), telemetry=mock_telemetry)
@@ -194,7 +305,25 @@ async def test_json_streaming():
 
 
 async def main_test():
-    """Run all tests"""
+    """
+    Run all tests sequentially.
+    
+    Main test runner that executes all test functions in sequence.
+    Currently configured to run only streaming tests, with other tests
+    commented out for focused testing.
+
+    The function:
+    1. Attempts to run each test in sequence
+    2. Catches and reports any exceptions
+    3. Currently focuses on streaming tests
+    4. Other tests are commented out for selective testing
+
+    Returns:
+        None
+
+    Raises:
+        Exception: Prints error message if any test fails
+    """
     try:
         # # Test basic queries
         # await test_basic_queries()
