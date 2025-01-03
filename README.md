@@ -88,9 +88,9 @@ IMPORTANT:  This will be used in the NVIDIA_API_KEY environment variable below.
 
    ```bash
    #Create env file with required variables in /home/<username>/.local/bin/env  
-   echo "ELEVENLABS_API_KEY=your_key" > env
-   echo "NVIDIA_API_KEY=your_key" >> env
-   echo "MAX_CONCURRENT_REQUESTS=1" >> env
+   echo "ELEVENLABS_API_KEY=your_key" >> .env
+   echo "NVIDIA_API_KEY=your_key" >> .env
+   echo "MAX_CONCURRENT_REQUESTS=1" >> .env
    ```
 > **Note:** the ElevenLabs API key can handle concurrent requests. For local development, set MAX_CONCURRENT_REQUESTS=1 to avoid rate-limiting issues.
 
