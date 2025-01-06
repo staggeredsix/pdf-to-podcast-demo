@@ -21,7 +21,7 @@ For more information about the PDF, Agent and TTS service flows, please refer to
 - Redis - [Redis](https://redis.io/)
 - Storage - [MinIO](https://minio.io/)
 
-> **Note:** Since NVIDIA blueprints are adaptable to your specific business use case and/or infrastructure, the above software components are configurable. For example, to decrease the amount of GPU memory required, you can leverage a smaller LLama 3.1-8B NIM and disable GPU usage for Docling in docker-compose.yaml.
+> **Note:** Since NVIDIA blueprints are adaptable to your specific business use case and/or infrastructure, the above software components are configurable. For example, to decrease the amount of GPU memory required, you can leverage a smaller Llama 3.1-8B NIM and disable GPU usage for Docling in docker-compose.yaml.
 
 Docker Compose scripts are provided which spin up the microservices on a single node.  The Blueprint contains sample use-case PDFs but Developers can build upon this blueprint, by using their own PDFs based upon their specific use case.
 
@@ -150,11 +150,11 @@ The make `model-dev` target will let you spin up only the docling service.
 
 2. **Use Self-hosted NIM**
 
-By default this blueprint uses an ensemble of 3 LLMs to generate podcasts. The example uses the LLama 3.1-8B, LLama 3.1-70B, & LLama 3.1-405B NIMs for balanced performance and accuracy. To use a different model, update the models.json file with the desired model. The default models.json calls an NVIDIA-hosted API Catalog endpoints. This is the default configuration and is recommended for most users getting started with the blueprint but once you want to adapt the blueprint, locally hosted NIM endpoints are required.
+By default this blueprint uses an ensemble of 3 LLMs to generate podcasts. The example uses the Llama 3.1-8B, Llama 3.1-70B, & Llama 3.1-405B NIMs for balanced performance and accuracy. To use a different model, update the models.json file with the desired model. The default models.json calls an NVIDIA-hosted API Catalog endpoints. This is the default configuration and is recommended for most users getting started with the blueprint but once you want to adapt the blueprint, locally hosted NIM endpoints are required.
 
 3. **Change the Default Models and GPU Assignments**
 
-It is easy to swap out different pieces of the stack to optimize GPU usage for available hardware. For example, minimize GPU usage by swapping in the smaller LLama 3.1-8B NIM and disabling GPU usage for docling in docker-compose.yaml.
+It is easy to swap out different pieces of the stack to optimize GPU usage for available hardware. For example, minimize GPU usage by swapping in the smaller Llama 3.1-8B NIM and disabling GPU usage for docling in docker-compose.yaml.
 
 4. **Enable Tracing**
 
