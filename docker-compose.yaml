@@ -1,4 +1,28 @@
 services:
+  local-nim:
+    image: nvcr.io/nim/meta/llama-3.1-8b-instruct:latest
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [ gpu ]
+    ports:
+      - "8000:8000"
+    volumes:
+      - type: bind
+        source: ~/.cache/nim
+        target: /opt/nim/.cache/
+    environment:
+      - NIM_MODEL_PROFILE=193649a2eb95e821309d6023a2cabb31489d3b690a9973c7ab5d1ff58b0aa7eb
+      - NGC_API_KEY=${NVIDIA_API_KEY:?Error NVIDIA_API_KEY not set}
+    networks:
+      - app-network
+    profiles:
+      - local
+      
   redis:
     image: redis:latest
     ports:
@@ -16,7 +40,7 @@ services:
       - MINIO_ROOT_USER=minioadmin
       - MINIO_ROOT_PASSWORD=minioadmin
     volumes:
-      - ./data/minio:/data
+      - minio_data:/data
     command: minio server /data --console-address ":9001"
     networks:
       - app-network
@@ -150,6 +174,7 @@ services:
 volumes:
   redis_data:
   pdf_temp:
+  minio_data:
 
 networks:
   app-network:

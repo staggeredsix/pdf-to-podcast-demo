@@ -10,6 +10,10 @@ The blueprint accepts a Target PDF and optionally multiple Context PDFs. The Tar
 
 For more information about the PDF, Agent and TTS service flows, please refer to the mermaid [diagram](docs/README.md)
 
+| :exclamation: Important |
+| :-----------------------|
+| Users running this blueprint with [NVIDIA AI Workbench](https://www.nvidia.com/en-us/deep-learning-ai/solutions/data-science/workbench/) should skip to the quickstart section [here](https://github.com/nv-edwli/pdf-to-podcast/tree/main/workbench#quickstart)! |
+
 ## Software Components
 - NVIDIA NIM microservices
    - Response generation (Inference)
