@@ -153,7 +153,8 @@ with gr.Blocks(css=css, js=js_func) as demo:
             transcript_file = gr.File(visible=False, interactive=False)
             history_file = gr.File(visible=False, interactive=False)
 
-    demo.load(logger.read_logs, None, output, every=1)
+    timer = gr.Timer()
+    timer.tick(logger.read_logs, None, output)
     
     def read_chain_config() -> str:
         """Read the chain config file."""
