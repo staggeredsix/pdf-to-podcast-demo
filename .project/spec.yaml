@@ -91,7 +91,7 @@ environment:
         package_manager_environment:
             name: ""
             target: ""
-    compose_file_path: ""
+    compose_file_path: workbench/docker-compose.yaml
 execution:
     apps:
         - name: frontend
