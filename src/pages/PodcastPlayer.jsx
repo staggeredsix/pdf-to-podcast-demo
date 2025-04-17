@@ -73,4 +73,41 @@ function PodcastPlayer() {
         >
           &larr; Back to Jobs
         </button>
-        <h2 className="text-2
+        <h2 className="text-2xl font-bold">{metadata.name}</h2>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 className="text-lg font-medium mb-4">Podcast Details</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p className="text-sm text-gray-500">Created</p>
+            <p className="text-gray-900">
+              {new Date(metadata.created_at).toLocaleString()}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Duration</p>
+            <p className="text-gray-900">{metadata.duration} minutes</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Format</p>
+            <p className="text-gray-900">
+              {metadata.monologue ? 'Monologue' : 'Dialogue'}
+            </p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Speakers</p>
+            <p className="text-gray-900">
+              {metadata.speaker_1_name}
+              {!metadata.monologue && ` and ${metadata.speaker_2_name}`}
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <AudioPlayer audioUrl={audioUrl} transcript={transcript} />
+    </div>
+  );
+}
+
+export default PodcastPlayer;
